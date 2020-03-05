@@ -11,8 +11,8 @@ import java.util.List;
 public interface DataService {
     void clearDataStore();
     void reloadDataStore();
-    boolean addItem(final LibraryItem item);
-    boolean removeItem(final LibraryItem item) throws LibraryOperationException;
+    boolean addLibraryItem(final LibraryItem item);
+    boolean removeLibraryItem(final LibraryItem item) throws LibraryOperationException;
     boolean addLoan(Person borrower, LibraryItem item, LocalDate issueDate, LocalDate dueDate);
     boolean returnLoanedItem(LibraryItem item);
     List<LibraryItem> getCurrentInventory();

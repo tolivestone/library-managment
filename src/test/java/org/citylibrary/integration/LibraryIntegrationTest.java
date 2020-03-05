@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.citylibrary.Library;
 import org.citylibrary.db.CSVLibraryDataStore;
 import org.citylibrary.db.DataStore;
+import org.citylibrary.enums.ItemType;
 import org.citylibrary.enums.Status;
 import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.*;
@@ -15,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class LibraryIntegrationTest {
 
@@ -37,37 +39,112 @@ public class LibraryIntegrationTest {
     @Test
     public void getCurrentInventory() {
 
-        Assertions.assertThat(library.getCurrentInventory())
+        //Given
+        dataService.reloadDataStore();
+
+        //When
+        List<LibraryItem> inventory = library.getCurrentInventory();
+
+        //Then
+        Assertions.assertThat(inventory)
                 .isNotEmpty()
                 .hasSize(12);
     }
 
-   @Test
-    public void borrowItem() {
+    @Test
+    public void canGetCurrentInventoryWhenLibraryHasNoItems() {
 
-        LibraryItem borrowBook = library.getCurrentInventory().get(0);
+        //Given
+        dataService.clearDataStore();
 
-        Assertions.assertThat(library.borrowItem(borrower,borrowBook))
-                .isTrue();
+        //When
+        List<LibraryItem> inventory = library.getCurrentInventory();
 
+        //Then
+        Assertions.assertThat(inventory)
+                .isEmpty();
+    }
+
+    @Test
+    public void canBorrowBook() {
+        //Given
+        LibraryItem borrowBook = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
+
+        //When
+        boolean ret = library.borrowItem(borrower,borrowBook);
+
+        //Then
+        Assertions.assertThat(ret).isTrue();
         Assertions.assertThat(borrowBook)
                 .extracting(LibraryItem::getItemStatus)
                 .as(Status.LOANED.toString());
     }
 
+    @Test
+    public void canBorrowDvd() {
+        //Given
+        LibraryItem borrowDvd = library.findItem("Pi", ItemType.DVD);
+
+        //When
+        boolean ret = library.borrowItem(borrower,borrowDvd);
+
+        //Then
+        Assertions.assertThat(ret).isTrue();
+        Assertions.assertThat(borrowDvd)
+                .extracting(LibraryItem::getItemStatus)
+                .as(Status.LOANED.toString());
+    }
+
+    @Test
+    public void canBorrowVhs() {
+        //Given
+        LibraryItem borrowVhs = library.findItem("Hackers", ItemType.VHS);
+
+        //When
+        boolean ret = library.borrowItem(borrower,borrowVhs);
+
+        //Then
+        Assertions.assertThat(ret).isTrue();
+        Assertions.assertThat(borrowVhs)
+                .extracting(LibraryItem::getItemStatus)
+                .as(Status.LOANED.toString());
+    }
+
      @Test
-    public void returnItem() {
+    public void canReturnBorrowedItem() {
 
-         LibraryItem borrowBookAndReturnBook = library.getCurrentInventory().get(0);
+        //Given
+         LibraryItem borrowBook = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
+         library.borrowItem(borrower,borrowBook);
 
-         library.borrowItem(borrower,borrowBookAndReturnBook);
+         //When
+         boolean ret = library.returnItem(borrowBook);
 
-         Assertions.assertThat(library.returnItem(borrowBookAndReturnBook))
+         //Then
+         Assertions.assertThat(ret)
                  .isTrue();
 
-         Assertions.assertThat(borrowBookAndReturnBook)
+         Assertions.assertThat(borrowBook)
                  .extracting(LibraryItem::getItemStatus)
                  .as(Status.AVAILABLE.toString());
+    }
+
+    @Test
+    public void canNotReturnUnBorrowedItem() {
+
+        //Given
+        LibraryItem borrowBook = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
+
+        //When
+        boolean ret = library.returnItem(borrowBook);
+
+        //Then
+        Assertions.assertThat(ret)
+                .isFalse();
+
+        Assertions.assertThat(borrowBook)
+                .extracting(LibraryItem::getItemStatus)
+                .as(Status.AVAILABLE.toString());
     }
 
     @Test
@@ -87,25 +164,39 @@ public class LibraryIntegrationTest {
     }
 
     @Test
-    public void getItemBorrowedByUser() {
-        LibraryItem borrowBook1 = library.getCurrentInventory().get(0);
-        LibraryItem borrowBook2 = library.getCurrentInventory().get(1);
-        LibraryItem borrowBook3 = library.getCurrentInventory().get(3);
+    public void cangetItemsBorrowedByGivenUser() {
 
-        library.borrowItem(borrower,borrowBook1);
-        library.borrowItem(borrower,borrowBook2);
-        library.borrowItem(borrower,borrowBook3);
+        //Given
+        dataService.reloadDataStore();
+        LibraryItem borrowSoftwareBook = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
+        LibraryItem borrowJavaBook = library.findItem("Java Concurrency In Practice", ItemType.BOOK);
+        LibraryItem borrowHackersVhs = library.findItem("Hackers", ItemType.VHS);
 
-        Assertions.assertThat(library.getItemBorrowedByUser(borrower))
+        library.borrowItem(borrower,borrowSoftwareBook);
+        library.borrowItem(borrower,borrowJavaBook);
+        library.borrowItem(borrower,borrowHackersVhs);
+
+        //When
+        List<Loan> loans = library.getItemBorrowedByUser(borrower);
+
+        //Then
+        Assertions.assertThat(loans)
                 .isNotEmpty()
-                .hasSize(3);
-
+                .hasSize(3)
+                .flatExtracting(Loan::getBorrower)
+                .allMatch(b->b.equals(borrower));
     }
 
     @Test
     public void isBookAvailable() {
-        LibraryItem book = library.getCurrentInventory().get(3);
-        Assertions.assertThat(library.isBookAvailable(book))
+        //Given
+        LibraryItem book = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
+
+        //When
+        boolean available = library.isBookAvailable(book);
+
+        //Then
+        Assertions.assertThat(available)
                 .isTrue();
     }
 }

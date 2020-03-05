@@ -8,8 +8,7 @@ import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.LibraryItem;
 import org.citylibrary.model.item.Loan;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
@@ -30,52 +29,56 @@ public class CSVDataService implements DataService{
     @Override
     public void clearDataStore() {
         //TODO: Review try catch finally
-        writeLock.lock();
-            dataStore
-                    .getLibraryItems()
-                    .clear();
-        writeLock.unlock();
+        try {
+            writeLock.lock();
+            dataStore.getLibraryItems().clear();
+            dataStore.getLoans().clear();
+        }finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
     public void reloadDataStore() {
 
-        writeLock.lock();
-        this.clearDataStore();
-        dataStore
-                .getLibraryItems()
-                .addAll(LibrarItemCsvReader.getInstance().getLibraryItemsFromCsv());
-        writeLock.unlock();
+        try {
+            writeLock.lock();
+            this.clearDataStore();
+            dataStore.getLibraryItems()
+                    .addAll(LibrarItemCsvReader.getInstance().getLibraryItemsFromCsv());
+        }finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
     public List<LibraryItem> getCurrentInventory() {
 
-        readLock.lock();
-
-        List<LibraryItem> currentInventoryList
-                = dataStore
-                    .getLibraryItems()
-                    .parallelStream()
-                    .collect(Collectors.toList());
-
-        readLock.unlock();
-
+        List<LibraryItem> currentInventoryList = new ArrayList<>();;
+        try {
+            readLock.lock();
+            currentInventoryList =
+                    dataStore.getLibraryItems().parallelStream().collect(Collectors.toList());
+        }finally {
+            readLock.unlock();
+        }
         return  currentInventoryList;
-
     }
 
     @Override
     public List<LibraryItem> getCurrentLoanableInventory() {
 
         //TODO: review filter method
-        readLock.lock();
-        Predicates loanable = new Predicates(Status.AVAILABLE);
-        List<LibraryItem> currentLoanableInventoryList = getLibraryItems(loanable);
-        readLock.unlock();
+        List<LibraryItem> currentLoanableInventoryList = new ArrayList<>();
+        try {
+            readLock.lock();
+            Predicates loanable = new Predicates(Status.AVAILABLE);
+            currentLoanableInventoryList = getLibraryItems(loanable);
+        }finally {
+            readLock.unlock();
+        }
 
         return  currentLoanableInventoryList;
-
     }
 
 
@@ -84,52 +87,52 @@ public class CSVDataService implements DataService{
     public List<LibraryItem> searchItemsByTitle(final String title) {
         Objects.requireNonNull(title, "Title cannot be null");
 
-        readLock.lock();
-
-        List<LibraryItem> itemList
-                = dataStore
-                    .getLibraryItems()
-                    .parallelStream()
-                    .filter(libraryItem -> libraryItem.getTitle().contains(title))
-                    .collect(Collectors.toList());
-
-        readLock.unlock();
+        List<LibraryItem> itemList = new ArrayList<>();
+        try {
+            readLock.lock();
+            itemList = dataStore.getLibraryItems().parallelStream()
+                    .filter(libraryItem -> libraryItem.getTitle().contains(title)).collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
+        }
 
         return itemList;
     }
 
     @Override
     public List<LibraryItem> searchItemsByLibraryId(final int libraryId) {
+
+        List<LibraryItem> itemList = new ArrayList<>();
+        try{
         readLock.lock();
-
-        List<LibraryItem> itemList = dataStore
-                .getLibraryItems()
-                .parallelStream()
-                .filter(libraryItem -> libraryItem.getLibraryId() == libraryId)
-                .collect(Collectors.toList());
-
-        readLock.unlock();
+        itemList = dataStore.getLibraryItems().parallelStream()
+                .filter(libraryItem -> libraryItem.getLibraryId() == libraryId).collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
+        }
 
         return itemList;
     }
 
     @Override
-    public boolean addItem(final LibraryItem item) {
+    public boolean addLibraryItem(final LibraryItem item) {
         Objects.requireNonNull(item, "Item cannot be null");
 
         boolean added = false;
-
-        writeLock.lock();
-            if(!dataStore.getLibraryItems().contains(item)) {
-                 added =  dataStore.getLibraryItems().add(item);
-            }
-        writeLock.unlock();
+        try {
+                writeLock.lock();
+                if (!dataStore.getLibraryItems().contains(item)) {
+                    added = dataStore.getLibraryItems().add(item);
+                }
+            }finally {
+            writeLock.unlock();
+        }
 
         return added;
     }
 
     @Override
-    public boolean removeItem(final LibraryItem item) throws LibraryOperationException {
+    public boolean removeLibraryItem(final LibraryItem item) throws LibraryOperationException {
         Objects.requireNonNull(item, "Item cannot be null");
 
         boolean removed = false;
@@ -138,9 +141,12 @@ public class CSVDataService implements DataService{
             throw new LibraryOperationException("Item does not exist");
         }
 
-        writeLock.lock();
-                removed = dataStore.getLibraryItems().remove(item);
-        writeLock.unlock();
+        try {
+            writeLock.lock();
+            removed = dataStore.getLibraryItems().remove(item);
+        } finally {
+            writeLock.unlock();
+        }
 
         return removed;
     }
@@ -148,12 +154,14 @@ public class CSVDataService implements DataService{
     public boolean isBorrowed(final LibraryItem item){
         Objects.requireNonNull(item, "Item cannot be null");
 
-        readLock.lock();
-            boolean isBorrowed = dataStore
-                                    .getLoans()
-                                    .parallelStream()
-                                    .anyMatch(loan -> loan.getItem().equals(item));
-        readLock.unlock();
+        boolean isBorrowed;
+        try {
+            readLock.lock();
+            isBorrowed = dataStore.getLoans().parallelStream()
+                    .anyMatch(loan -> loan.getItem().equals(item));
+        }finally {
+            readLock.unlock();
+        }
         return isBorrowed;
     }
 
@@ -164,47 +172,49 @@ public class CSVDataService implements DataService{
         Objects.requireNonNull(issueDate, "issueDate cannot be null");
         Objects.requireNonNull(dueDate, "dueDate cannot be null");
 
-        boolean added = false;
-        writeLock.lock();
+        boolean added;
+        try {
+            writeLock.lock();
             item.setItemStatus(Status.LOANED);
-            Loan newLoan = new Loan(borrower,item,issueDate,dueDate);
+            Loan newLoan = new Loan(borrower, item, issueDate, dueDate);
             added = dataStore.getLoans().add(newLoan);
-        writeLock.unlock();
+        } finally {
+            writeLock.unlock();
+        }
 
-        return true;
+        return added;
     }
 
     @Override
     public List<Loan> getLoan() {
 
-        readLock.lock();
-
-        List<Loan> loanList = dataStore
-                .getLoans()
-                .parallelStream()
-                .collect(Collectors.toList());
-
-        readLock.unlock();
+        List<Loan> loanList = new ArrayList<>();
+        try {
+            readLock.lock();
+            loanList = dataStore.getLoans().parallelStream().collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
+        }
 
         return  loanList;
     }
 
     public boolean returnLoanedItem(LibraryItem item) {
 
-        writeLock.lock();
-        Loan loanedItem = dataStore.getLoans().stream()
-                .filter(litem -> litem.getItem().equals(item))
-                .findAny()
-                .orElse(null);
+        boolean success= false;
+        try {
+            writeLock.lock();
+            Loan loanedItem = dataStore.getLoans().stream()
+                    .filter(litem -> litem.getItem().equals(item)).findAny().orElse(null);
 
-        if(loanedItem != null) {
-            dataStore.getLoans().remove(loanedItem);
-            item.setItemStatus(Status.AVAILABLE);
-            return true;
+            if (loanedItem != null) {
+                item.setItemStatus(Status.AVAILABLE);
+                success = dataStore.getLoans().remove(loanedItem);
+            }
+        }finally {
+            writeLock.unlock();
         }
-        writeLock.unlock();
-        return false;
-
+        return success;
     }
 
     private List<LibraryItem> getLibraryItems(Predicates p) {

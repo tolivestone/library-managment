@@ -7,6 +7,7 @@ import org.citylibrary.model.actor.Borrower;
 import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.Book;
 import org.citylibrary.model.item.LibraryItem;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.*;
 public class LibrarayItemLendingServiceTest {
 
     @Test
+    @Ignore
     public void borrowItem_happyPath_1() {
         DataStore mockDataStore = mock(DataStore.class);
         CSVDataService mockCSVDataService = new CSVDataService(mockDataStore);

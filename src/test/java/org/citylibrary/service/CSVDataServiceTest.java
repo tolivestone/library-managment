@@ -15,6 +15,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO:Mock dependency
 public class CSVDataServiceTest {
 
 
@@ -40,7 +41,7 @@ public class CSVDataServiceTest {
         items.add(new Dvd(4,2,"Test DVD"));
         items.add(new Dvd(5,3,"Test DVD"));
 
-        items.parallelStream().forEach(item-> CSVDataService.addItem(item));
+        items.parallelStream().forEach(item-> CSVDataService.addLibraryItem(item));
 
         //Checking inventory
         Assertions.assertThat(CSVDataService.getCurrentInventory())
@@ -70,7 +71,7 @@ public class CSVDataServiceTest {
         items.add(new Dvd(4,2,"Test DVD"));
         items.add(new Dvd(5,3,"Test DVD"));
 
-        items.parallelStream().forEach(item-> CSVDataService.addItem(item));
+        items.parallelStream().forEach(item-> CSVDataService.addLibraryItem(item));
 
         //Checking inventory with loaned items
         items.get(0).setItemStatus(Status.LOANED);
@@ -94,7 +95,7 @@ public class CSVDataServiceTest {
         items.add(new Dvd(4,2,"Test DVD"));
         items.add(new Dvd(5,3,"Test DVD"));
 
-        items.parallelStream().forEach(item-> CSVDataService.addItem(item));
+        items.parallelStream().forEach(item-> CSVDataService.addLibraryItem(item));
 
         Assertions.assertThat(CSVDataService.searchItemsByTitle("Introduction to Algorithms"))
                 .isNotEmpty()
@@ -113,7 +114,7 @@ public class CSVDataServiceTest {
         items.add(new Dvd(4,2,"Test DVD"));
         items.add(new Dvd(5,3,"Test DVD"));
 
-        items.parallelStream().forEach(item-> CSVDataService.addItem(item));
+        items.parallelStream().forEach(item-> CSVDataService.addLibraryItem(item));
 
         Assertions.assertThat(CSVDataService.searchItemsByTitle("Fake title"))
                 .isEmpty();
@@ -127,7 +128,7 @@ public class CSVDataServiceTest {
 
         LibraryItem vhs = new Vhs(1,2,"WarGames");
 
-        boolean isAdded = CSVDataService.addItem(vhs);
+        boolean isAdded = CSVDataService.addLibraryItem(vhs);
 
         Assertions.assertThat(isAdded)
                 .isEqualTo(true);
@@ -147,7 +148,7 @@ public class CSVDataServiceTest {
                 .isEmpty();
 
         Assertions.assertThatNullPointerException()
-                .isThrownBy(()-> CSVDataService.addItem(null))
+                .isThrownBy(()-> CSVDataService.addLibraryItem(null))
                 .withMessage("Item cannot be null");
     }
 
@@ -155,7 +156,7 @@ public class CSVDataServiceTest {
     public void removeItem_happyPath() throws LibraryOperationException {
 
         LibraryItem vhs = new Vhs(1,2,"WarGames");
-        CSVDataService.addItem(vhs);
+        CSVDataService.addLibraryItem(vhs);
 
         Assertions.assertThat(CSVDataService.searchItemsByLibraryId(1))
                 .isNotEmpty()
@@ -164,7 +165,7 @@ public class CSVDataServiceTest {
                 .flatExtracting(LibraryItem::getTitle)
                 .allMatch(d-> d.equals("WarGames"));
 
-        boolean isRemoved = CSVDataService.removeItem(vhs);
+        boolean isRemoved = CSVDataService.removeLibraryItem(vhs);
 
         Assertions.assertThat(isRemoved)
                 .isEqualTo(true);
@@ -177,7 +178,7 @@ public class CSVDataServiceTest {
     public void remove_withNullParameter() {
 
         Assertions.assertThatNullPointerException()
-                .isThrownBy(()-> CSVDataService.removeItem(null))
+                .isThrownBy(()-> CSVDataService.removeLibraryItem(null))
                 .withMessage("Item cannot be null");
     }
 
@@ -190,7 +191,7 @@ public class CSVDataServiceTest {
         LibraryItem vhs = new Vhs(1,2,"WarGames");
 
         Assertions.assertThatExceptionOfType(LibraryOperationException.class)
-                .isThrownBy(()-> CSVDataService.removeItem(vhs))
+                .isThrownBy(()-> CSVDataService.removeLibraryItem(vhs))
                 .withMessage("Item does not exist");
     }
 

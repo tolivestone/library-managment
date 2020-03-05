@@ -72,4 +72,11 @@ public final class Library {
                 .anyMatch(item->item.equals(libraryItem) && item.getType() == ItemType.BOOK);
     }
 
+    public LibraryItem findItem(String title, ItemType itemType) {
+        return
+                dataService.getCurrentInventory()
+                .parallelStream()
+                .filter(item-> item.getTitle().contains(title) && item.getType().equals(itemType))
+                .findFirst().get();
+    }
 }
