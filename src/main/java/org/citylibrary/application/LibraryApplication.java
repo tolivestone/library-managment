@@ -1,5 +1,6 @@
-package org.citylibrary;
+package org.citylibrary.application;
 
+import org.citylibrary.Library;
 import org.citylibrary.db.DataStore;
 import org.citylibrary.db.CSVLibraryDataStore;
 import org.citylibrary.enums.Status;
