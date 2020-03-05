@@ -15,10 +15,9 @@ public final class Library {
 
     //TODO: review singleton
     // Singletone Library Instance
-    private static Library instance;
 
-    private DataService dataService;
-    private LendingService lendingService;
+    private final DataService dataService;
+    private final LendingService lendingService;
 
     private static final int LOAN_PERIOD = 7;
 

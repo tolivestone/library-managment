@@ -22,7 +22,7 @@ public class CSVDataServiceTest {
     CSVDataService CSVDataService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         dataStore = CSVLibraryDataStore.getInstance();
         CSVDataService = new CSVDataService(dataStore);
         CSVDataService.clearDataStore();

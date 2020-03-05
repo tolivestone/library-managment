@@ -5,7 +5,6 @@ import org.citylibrary.Library;
 import org.citylibrary.db.CSVLibraryDataStore;
 import org.citylibrary.db.DataStore;
 import org.citylibrary.enums.Status;
-import org.citylibrary.model.actor.Borrower;
 import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.*;
 import org.citylibrary.service.CSVDataService;
@@ -16,10 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
 
 public class LibraryIntegrationTest {
 
@@ -30,7 +25,7 @@ public class LibraryIntegrationTest {
     DataStore dataStore;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         dataStore = CSVLibraryDataStore.getInstance();
         dataService = new CSVDataService(dataStore);
         dataService.reloadDataStore();

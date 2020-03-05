@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 //TODO: rename CSVDataService
 public class CSVDataService implements DataService{
 
-    private DataStore dataStore;
+    private final DataStore dataStore;
 
     //TODO: Review
-    private ReentrantReadWriteLock.ReadLock readLock = new ReentrantReadWriteLock().readLock();
-    private ReentrantReadWriteLock.WriteLock writeLock = new ReentrantReadWriteLock().writeLock();
+    private final ReentrantReadWriteLock.ReadLock readLock = new ReentrantReadWriteLock().readLock();
+    private final ReentrantReadWriteLock.WriteLock writeLock = new ReentrantReadWriteLock().writeLock();
 
     public CSVDataService(DataStore dataStore) {
         this.dataStore = dataStore;
@@ -100,8 +100,6 @@ public class CSVDataService implements DataService{
 
     @Override
     public List<LibraryItem> searchItemsByLibraryId(final int libraryId) {
-        Objects.requireNonNull(libraryId, "library id cannot be null");
-
         readLock.lock();
 
         List<LibraryItem> itemList = dataStore
@@ -173,7 +171,7 @@ public class CSVDataService implements DataService{
             added = dataStore.getLoans().add(newLoan);
         writeLock.unlock();
 
-        return added;
+        return true;
     }
 
     @Override
@@ -218,7 +216,7 @@ public class CSVDataService implements DataService{
     }
 
     private static class Predicates {
-        private  Status status;
+        private final Status status;
         public boolean lonable(LibraryItem item) {
             return item.getItemStatus().equals(status);
         }

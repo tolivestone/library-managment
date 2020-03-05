@@ -4,11 +4,10 @@ import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.LibraryItem;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class LibrarayItemLendingService implements LendingService{
 
-    private DataService dataService;
+    private final DataService dataService;
 
     public LibrarayItemLendingService(DataService dataService){
         this.dataService = dataService;
@@ -19,9 +18,7 @@ public class LibrarayItemLendingService implements LendingService{
         if(borrower == null || item == null || issueDate == null || dueDate == null)
             throw new IllegalArgumentException("One or more arguments are null");
 
-        if(dataService.addLoan(borrower, item, issueDate, dueDate))
-            return true;
-        return  false;
+        return dataService.addLoan(borrower, item, issueDate, dueDate);
     }
 
     @Override
@@ -29,8 +26,7 @@ public class LibrarayItemLendingService implements LendingService{
         if(item == null) throw new IllegalArgumentException("Item cannot be null");
 
         if(!item.isLoanable()) {
-           if(dataService.returnLoanedItem(item))
-                return true;
+            return dataService.returnLoanedItem(item);
         }
         return  false;
     }

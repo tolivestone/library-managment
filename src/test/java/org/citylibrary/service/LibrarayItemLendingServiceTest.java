@@ -2,6 +2,7 @@ package org.citylibrary.service;
 
 import org.assertj.core.api.Assertions;
 import org.citylibrary.db.DataStore;
+import org.citylibrary.enums.Status;
 import org.citylibrary.model.actor.Borrower;
 import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.Book;
@@ -11,7 +12,6 @@ import org.junit.Test;
 import java.time.LocalDate;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.atMost;
 
 public class LibrarayItemLendingServiceTest {
 
@@ -63,7 +63,7 @@ public class LibrarayItemLendingServiceTest {
         LibrarayItemLendingService librarayItemLendingService = new LibrarayItemLendingService(mockCSVDataService);
 
         Assertions
-                .assertThatExceptionOfType(NullPointerException.class)
+                .assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(
                         ()-> librarayItemLendingService
                                 .borrowItem(null, null, null, null));
@@ -79,14 +79,13 @@ public class LibrarayItemLendingServiceTest {
         LibrarayItemLendingService librarayItemLendingService = new LibrarayItemLendingService(mockCSVDataService);
 
         LibraryItem book = new Book(1,1,"Test Book");
+        book.setItemStatus(Status.LOANED);
 
-        when(mockCSVDataService.isBorrowed(book)).thenReturn(true);
         when(mockCSVDataService.returnLoanedItem(book)).thenReturn(true);
 
         Assertions.assertThat(librarayItemLendingService.returnItem(book))
                 .isEqualTo(true);
 
-        verify(mockCSVDataService, atMost(1)).isBorrowed(book);
         verify(mockCSVDataService, atMost(1)).returnLoanedItem(book);
     }
 
@@ -98,13 +97,11 @@ public class LibrarayItemLendingServiceTest {
 
         LibraryItem book = new Book(1,1,"Test Book");
 
-        when(mockCSVDataService.isBorrowed(book)).thenReturn(false);
         when(mockCSVDataService.returnLoanedItem(book)).thenReturn(false);
 
         Assertions.assertThat(librarayItemLendingService.returnItem(book))
                 .isEqualTo(false);
 
-        verify(mockCSVDataService, atMost(1)).isBorrowed(book);
         verify(mockCSVDataService, never()).returnLoanedItem(book);
     }
 
@@ -114,7 +111,7 @@ public class LibrarayItemLendingServiceTest {
         CSVDataService mockCSVDataService = mock(CSVDataService.class);
         LibrarayItemLendingService librarayItemLendingService = new LibrarayItemLendingService(mockCSVDataService);
 
-        Assertions.assertThatExceptionOfType(NullPointerException.class)
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(()-> librarayItemLendingService.returnItem(null));
 
         verify(mockCSVDataService, never()).isBorrowed(null);

@@ -4,7 +4,7 @@ import org.citylibrary.model.actor.Borrower;
 import org.citylibrary.model.actor.Person;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.Objects;
 
 public class Loan {
     private Person borrower;
@@ -59,10 +59,10 @@ public class Loan {
 
         Loan loan = (Loan) o;
 
-        if (borrower != null ? !borrower.equals(loan.borrower) : loan.borrower != null) return false;
-        if (item != null ? !item.equals(loan.item) : loan.item != null) return false;
-        if (issueDate != null ? !issueDate.equals(loan.issueDate) : loan.issueDate != null) return false;
-        return dueDate != null ? dueDate.equals(loan.dueDate) : loan.dueDate == null;
+        if (!Objects.equals(borrower, loan.borrower)) return false;
+        if (!Objects.equals(item, loan.item)) return false;
+        if (!Objects.equals(issueDate, loan.issueDate)) return false;
+        return Objects.equals(dueDate, loan.dueDate);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.citylibrary.db;
 
-import org.citylibrary.Library;
 import org.citylibrary.csvhelper.LibrarItemCsvReader;
 import org.citylibrary.model.actor.Borrower;
 import org.citylibrary.model.actor.Person;

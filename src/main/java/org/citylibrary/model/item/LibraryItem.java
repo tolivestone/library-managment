@@ -3,6 +3,8 @@ package org.citylibrary.model.item;
 import org.citylibrary.enums.ItemType;
 import org.citylibrary.enums.Status;
 
+import java.util.Objects;
+
 //TODO: check getters and setters
 public abstract class LibraryItem implements Loanable {
 
@@ -54,7 +56,7 @@ public abstract class LibraryItem implements Loanable {
         if (libraryId != that.libraryId) return false;
         if (itemId != that.itemId) return false;
         if (type != that.type) return false;
-        if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (!Objects.equals(title, that.title)) return false;
         return itemStatus == that.itemStatus;
     }
 

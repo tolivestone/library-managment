@@ -4,7 +4,6 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import org.citylibrary.enums.ItemType;
 import org.citylibrary.model.item.LibraryItem;
-import org.citylibrary.model.item.Loanable;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,7 +30,7 @@ public final class LibrarItemCsvReader {
 
         String csvFile = "C:\\Users\\Keya\\IdeaProjects\\library-managment\\library-managment\\src\\main\\resources\\library.csv";
 
-        CSVReader csvReader = null;
+        CSVReader csvReader;
         List<LibraryItem> libraryItems = new ArrayList<>();
 
         try{

@@ -1,7 +1,6 @@
 package org.citylibrary;
 
 import org.assertj.core.api.Assertions;
-import org.citylibrary.enums.Status;
 import org.citylibrary.model.actor.Borrower;
 import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.Book;
@@ -30,7 +29,7 @@ public class LibraryTest {
     Borrower borrower;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
         //Mocking dependent services
         mockDataService = mock(CSVDataService.class);
@@ -73,12 +72,12 @@ public class LibraryTest {
         Person borrower = new Borrower(1,"Borrower 1","Borrower's last name");
         LocalDate today = LocalDate.now();
         LocalDate dueDate = today.plusDays(7);
-        when(mockLendingService.borrowItem(borrower,item, LocalDate.now(), LocalDate.now().plusDays(7))).thenReturn(true);
+        when(mockLendingService.borrowItem(borrower,item, today, dueDate)).thenReturn(true);
 
         Assertions.assertThat(library.borrowItem(borrower,item))
                 .isTrue();
         verify(mockLendingService, atMost(1))
-                .borrowItem(borrower,item, LocalDate.now(), LocalDate.now().plusDays(7));
+                .borrowItem(borrower,item, today, dueDate);
     }
 
     @Test
