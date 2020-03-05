@@ -5,6 +5,7 @@ import com.opencsv.CSVReaderBuilder;
 import org.citylibrary.enums.ItemType;
 import org.citylibrary.model.item.LibraryItem;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,13 +29,15 @@ public final class LibrarItemCsvReader {
 
     public List<LibraryItem> getLibraryItemsFromCsv(){
 
-        String csvFile = "C:\\Users\\Keya\\IdeaProjects\\library-managment\\library-managment\\src\\main\\resources\\library.csv";
+        File datafile = new File(
+                getClass().getClassLoader().getResource("library.csv").getFile()
+        );
 
         CSVReader csvReader;
         List<LibraryItem> libraryItems = new ArrayList<>();
 
         try{
-            csvReader = new CSVReaderBuilder(new FileReader(csvFile))
+            csvReader = new CSVReaderBuilder(new FileReader(datafile))
                     .withSkipLines(1)
                     .build();
 

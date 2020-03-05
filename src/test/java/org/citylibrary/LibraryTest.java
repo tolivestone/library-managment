@@ -1,6 +1,7 @@
 package org.citylibrary;
 
 import org.assertj.core.api.Assertions;
+import org.citylibrary.enums.ItemType;
 import org.citylibrary.model.actor.Borrower;
 import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.Book;
@@ -36,12 +37,42 @@ public class LibraryTest {
         mockLendingService = mock(LibrarayItemLendingService.class);
         library = new Library(mockDataService,mockLendingService);
 
-        items = new ArrayList<>();
-        items.add(new Book(1,1,"Introduction to Algorithms"));
-        items.add(new Book(2,1,"Introduction to Algorithms"));
-        items.add(new Book(3,1,"Introduction to Algorithms"));
-        items.add(new Dvd(4,2,"Test DVD"));
-        items.add(new Dvd(5,3,"Test DVD"));
+        items = List.of(
+                new LibraryItem.LibraryItemBuilder()
+                        .withLibraryId(1)
+                        .withItemId(1)
+                        .withTitle("Introduction to Algorithms")
+                        .withType(ItemType.BOOK)
+                        .build(),
+
+                new LibraryItem.LibraryItemBuilder()
+                        .withLibraryId(2)
+                        .withItemId(1)
+                        .withTitle("Introduction to Algorithms")
+                        .withType(ItemType.BOOK)
+                        .build(),
+
+                new LibraryItem.LibraryItemBuilder()
+                        .withLibraryId(3)
+                        .withItemId(1)
+                        .withTitle("Introduction to Algorithms")
+                        .withType(ItemType.BOOK)
+                        .build(),
+
+                new LibraryItem.LibraryItemBuilder()
+                        .withLibraryId(4)
+                        .withItemId(2)
+                        .withTitle("Pi")
+                        .withType(ItemType.DVD)
+                        .build(),
+
+                new LibraryItem.LibraryItemBuilder()
+                        .withLibraryId(5)
+                        .withItemId(3)
+                        .withTitle("Hackers")
+                        .withType(ItemType.DVD)
+                        .build()
+        );
 
         borrower = new Borrower(1,"Borrower1", "B Last Name");
 
