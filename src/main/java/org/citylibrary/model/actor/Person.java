@@ -1,7 +1,7 @@
 package org.citylibrary.model.actor;
 
 abstract public class Person {
-    private final int id;
+    private final int id; // unique identity
     private final String firstName;
     private final String lastName;
 

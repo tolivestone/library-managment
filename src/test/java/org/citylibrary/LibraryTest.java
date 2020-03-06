@@ -38,40 +38,11 @@ public class LibraryTest {
         library = new Library(mockDataService,mockLendingService);
 
         items = List.of(
-                new LibraryItem.LibraryItemBuilder()
-                        .withLibraryId(1)
-                        .withItemId(1)
-                        .withTitle("Introduction to Algorithms")
-                        .withType(ItemType.BOOK)
-                        .build(),
-
-                new LibraryItem.LibraryItemBuilder()
-                        .withLibraryId(2)
-                        .withItemId(1)
-                        .withTitle("Introduction to Algorithms")
-                        .withType(ItemType.BOOK)
-                        .build(),
-
-                new LibraryItem.LibraryItemBuilder()
-                        .withLibraryId(3)
-                        .withItemId(1)
-                        .withTitle("Introduction to Algorithms")
-                        .withType(ItemType.BOOK)
-                        .build(),
-
-                new LibraryItem.LibraryItemBuilder()
-                        .withLibraryId(4)
-                        .withItemId(2)
-                        .withTitle("Pi")
-                        .withType(ItemType.DVD)
-                        .build(),
-
-                new LibraryItem.LibraryItemBuilder()
-                        .withLibraryId(5)
-                        .withItemId(3)
-                        .withTitle("Hackers")
-                        .withType(ItemType.DVD)
-                        .build()
+                new LibraryItem.LibraryItemBuilder(1,1, ItemType.BOOK, "Introduction to Algorithms").build(),
+                new LibraryItem.LibraryItemBuilder(2,1, ItemType.BOOK, "Introduction to Algorithms").build(),
+                new LibraryItem.LibraryItemBuilder(3,1, ItemType.BOOK, "Introduction to Algorithms").build(),
+                new LibraryItem.LibraryItemBuilder(4,2, ItemType.DVD, "Pi").build(),
+                new LibraryItem.LibraryItemBuilder(5,3, ItemType.DVD, "Frozen").build()
         );
 
         borrower = new Borrower(1,"Borrower1", "B Last Name");

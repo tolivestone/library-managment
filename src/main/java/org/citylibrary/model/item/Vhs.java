@@ -3,9 +3,9 @@ package org.citylibrary.model.item;
 import org.citylibrary.enums.ItemType;
 import org.citylibrary.enums.Status;
 
-public class Vhs extends LibraryItem {
-    public Vhs(final int libraryId, final int itemId,final  String title) {
-        super(libraryId,itemId, ItemType.VHS, title);
+public final class Vhs extends LibraryItem {
+    protected Vhs(final int libraryId, final int itemId,final  String title, final String description) {
+        super(libraryId,itemId, ItemType.VHS, title,description);
     }
 
     @Override

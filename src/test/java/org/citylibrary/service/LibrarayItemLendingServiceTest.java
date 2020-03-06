@@ -2,6 +2,7 @@ package org.citylibrary.service;
 
 import org.assertj.core.api.Assertions;
 import org.citylibrary.db.DataStore;
+import org.citylibrary.enums.ItemType;
 import org.citylibrary.enums.Status;
 import org.citylibrary.model.actor.Borrower;
 import org.citylibrary.model.actor.Person;
@@ -23,7 +24,7 @@ public class LibrarayItemLendingServiceTest {
         CSVDataService mockCSVDataService = new CSVDataService(mockDataStore);
         LibrarayItemLendingService librarayItemLendingService = new LibrarayItemLendingService(mockCSVDataService);
 
-        LibraryItem book = new Book(1,1,"Test Book");
+        LibraryItem book = new LibraryItem.LibraryItemBuilder(1,1, ItemType.BOOK,"Test Book").build();
         Person borrower1 = new Borrower(1,"Borrower-1", "Borrower Last name");
         LocalDate today = LocalDate.now();
         LocalDate dueDate = today.plusDays(7);
@@ -44,7 +45,7 @@ public class LibrarayItemLendingServiceTest {
         CSVDataService mockCSVDataService = mock(CSVDataService.class);
         LibrarayItemLendingService librarayItemLendingService = new LibrarayItemLendingService(mockCSVDataService);
 
-        LibraryItem book = new Book(1,1,"Test Book");
+        LibraryItem book = new LibraryItem.LibraryItemBuilder(1,1,ItemType.BOOK,"Test Book").build();
         Person borrower1 = new Borrower(1,"Borrower-1", "Borrower Last name");
         LocalDate today = LocalDate.now();
         LocalDate dueDate = today.plusDays(7);
@@ -80,7 +81,7 @@ public class LibrarayItemLendingServiceTest {
         CSVDataService mockCSVDataService = mock(CSVDataService.class);
         LibrarayItemLendingService librarayItemLendingService = new LibrarayItemLendingService(mockCSVDataService);
 
-        LibraryItem book = new Book(1,1,"Test Book");
+        LibraryItem book =  new LibraryItem.LibraryItemBuilder(1,1,ItemType.BOOK,"Test Book").build();
         book.setItemStatus(Status.LOANED);
 
         when(mockCSVDataService.returnLoanedItem(book)).thenReturn(true);
@@ -97,7 +98,7 @@ public class LibrarayItemLendingServiceTest {
         CSVDataService mockCSVDataService = mock(CSVDataService.class);
         LibrarayItemLendingService librarayItemLendingService = new LibrarayItemLendingService(mockCSVDataService);
 
-        LibraryItem book = new Book(1,1,"Test Book");
+        LibraryItem book =  new LibraryItem.LibraryItemBuilder(1,1,ItemType.BOOK,"Test Book").build();
 
         when(mockCSVDataService.returnLoanedItem(book)).thenReturn(false);
 

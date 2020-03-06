@@ -3,6 +3,7 @@ package org.citylibrary.service;
 import org.assertj.core.api.Assertions;
 import org.citylibrary.db.DataStore;
 import org.citylibrary.db.CSVLibraryDataStore;
+import org.citylibrary.enums.ItemType;
 import org.citylibrary.enums.Status;
 import org.citylibrary.exception.LibraryOperationException;
 import org.citylibrary.model.item.Book;
@@ -34,12 +35,7 @@ public class CSVDataServiceTest {
     @Test
     public void getCurrentInventory() {
 
-        List<LibraryItem> items = new ArrayList<>();
-        items.add(new Book(1,1,"Introduction to Algorithms"));
-        items.add(new Book(2,1,"Introduction to Algorithms"));
-        items.add(new Book(3,1,"Introduction to Algorithms"));
-        items.add(new Dvd(4,2,"Test DVD"));
-        items.add(new Dvd(5,3,"Test DVD"));
+        List<LibraryItem> items = getLibraryItemList();
 
         items.parallelStream().forEach(item-> CSVDataService.addLibraryItem(item));
 
@@ -64,12 +60,7 @@ public class CSVDataServiceTest {
     @Test
     public void getCurrentLoanableInventory() {
 
-        List<LibraryItem> items = new ArrayList<>();
-        items.add(new Book(1,1,"Introduction to Algorithms"));
-        items.add(new Book(2,1,"Introduction to Algorithms"));
-        items.add(new Book(3,1,"Introduction to Algorithms"));
-        items.add(new Dvd(4,2,"Test DVD"));
-        items.add(new Dvd(5,3,"Test DVD"));
+        List<LibraryItem> items = getLibraryItemList();
 
         items.parallelStream().forEach(item-> CSVDataService.addLibraryItem(item));
 
@@ -88,12 +79,7 @@ public class CSVDataServiceTest {
     @Test
     public void searchItemsByTitle_withMatchingItems() {
 
-        List<LibraryItem> items = new ArrayList<>();
-        items.add(new Book(1,1,"Introduction to Algorithms"));
-        items.add(new Book(2,1,"Introduction to Algorithms"));
-        items.add(new Book(3,1,"Introduction to Algorithms"));
-        items.add(new Dvd(4,2,"Test DVD"));
-        items.add(new Dvd(5,3,"Test DVD"));
+        List<LibraryItem> items = getLibraryItemList();
 
         items.parallelStream().forEach(item-> CSVDataService.addLibraryItem(item));
 
@@ -107,12 +93,7 @@ public class CSVDataServiceTest {
     @Test
     public void searchItemsByTitle_withNoMatchingItems() {
 
-        List<LibraryItem> items = new ArrayList<>();
-        items.add(new Book(1,1,"Introduction to Algorithms"));
-        items.add(new Book(2,1,"Introduction to Algorithms"));
-        items.add(new Book(3,1,"Introduction to Algorithms"));
-        items.add(new Dvd(4,2,"Test DVD"));
-        items.add(new Dvd(5,3,"Test DVD"));
+        List<LibraryItem> items = getLibraryItemList();
 
         items.parallelStream().forEach(item-> CSVDataService.addLibraryItem(item));
 
@@ -126,7 +107,8 @@ public class CSVDataServiceTest {
         Assertions.assertThat(CSVDataService.searchItemsByLibraryId(1))
                 .isEmpty();
 
-        LibraryItem vhs = new Vhs(1,2,"WarGames");
+        LibraryItem vhs =
+                new LibraryItem.LibraryItemBuilder(1,2,ItemType.VHS,"WarGames").build();
 
         boolean isAdded = CSVDataService.addLibraryItem(vhs);
 
@@ -155,7 +137,9 @@ public class CSVDataServiceTest {
     @Test
     public void removeItem_happyPath() throws LibraryOperationException {
 
-        LibraryItem vhs = new Vhs(1,2,"WarGames");
+        LibraryItem vhs =
+                new LibraryItem.LibraryItemBuilder(1,2,ItemType.VHS,"WarGames").build();
+
         CSVDataService.addLibraryItem(vhs);
 
         Assertions.assertThat(CSVDataService.searchItemsByLibraryId(1))
@@ -188,13 +172,24 @@ public class CSVDataServiceTest {
         Assertions.assertThat(CSVDataService.getCurrentInventory())
                 .isEmpty();
 
-        LibraryItem vhs = new Vhs(1,2,"WarGames");
+        LibraryItem vhs =
+                new LibraryItem.LibraryItemBuilder(1,2,ItemType.VHS,"WarGames").build();
 
         Assertions.assertThatExceptionOfType(LibraryOperationException.class)
                 .isThrownBy(()-> CSVDataService.removeLibraryItem(vhs))
                 .withMessage("Item does not exist");
     }
 
+
+     private List<LibraryItem> getLibraryItemList() {
+         return List.of(
+                 new LibraryItem.LibraryItemBuilder(1,1, ItemType.BOOK, "Introduction to Algorithms").build(),
+                 new LibraryItem.LibraryItemBuilder(2,1, ItemType.BOOK, "Introduction to Algorithms").build(),
+                 new LibraryItem.LibraryItemBuilder(3,1, ItemType.BOOK, "Introduction to Algorithms").build(),
+                 new LibraryItem.LibraryItemBuilder(4,2, ItemType.DVD, "Pi").build(),
+                 new LibraryItem.LibraryItemBuilder(5,3, ItemType.DVD, "Frozen").build()
+         );
+     }
 
     @Test
     public void isBorrowed() {

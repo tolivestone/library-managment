@@ -6,11 +6,11 @@ import org.citylibrary.model.actor.Person;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Loan {
-    private Person borrower;
-    private LibraryItem item;
-    private LocalDate issueDate;
-    private LocalDate dueDate;
+public final class Loan {
+    private final Person borrower;
+    private final LibraryItem item;
+    private final LocalDate issueDate;
+    private final LocalDate dueDate;
 
 
     public Loan(final Person borrower, final  LibraryItem item, final LocalDate issueDate, final LocalDate dueDate) {
@@ -24,32 +24,16 @@ public class Loan {
         return borrower;
     }
 
-    public void setBorrower(Borrower borrower) {
-        this.borrower = borrower;
-    }
-
     public LibraryItem getItem() {
         return item;
-    }
-
-    public void setItem(LibraryItem item) {
-        this.item = item;
     }
 
     public LocalDate getIssueDate() {
         return issueDate;
     }
 
-    public void setIssueDate(LocalDate issueDate) {
-        this.issueDate = issueDate;
-    }
-
     public LocalDate getDueDate() {
         return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
     }
 
     @Override

@@ -121,18 +121,17 @@ public class LibraryApplication
         System.out.println("**************************** CURRENT INVENTORY *************************************");
         System.out.println();
 
-        //library.getCurrentInventory().parallelStream().forEach(System.out::println);
         Map<Integer, List<LibraryItem>> mp = library.getCurrentInventory().stream().collect(Collectors.groupingBy((LibraryItem::getItemId)));
 
         mp.forEach((key, value) -> {
-            System.out.println("************************************************************************************");
             System.out.println("Item Id:" + key);
             System.out.println("Item Type:" + value.get(0).getType());
             System.out.println("Item Title:" + value.get(0).getTitle());
             System.out.println("Copies Available:" + value.stream().filter(t -> t.getItemStatus().equals(Status.AVAILABLE)).count());
             System.out.println("Currently Loaned:" + value.stream().filter(t -> t.getItemStatus().equals(Status.LOANED)).count());
+            System.out.println("List of Library Items:");
             value.forEach(System.out::println);
-
+            System.out.println("************************************************************************************");
         });
 
     }
@@ -143,7 +142,6 @@ public class LibraryApplication
         librarayItemLendingService = new LibrarayItemLendingService(CSVDataService);
         library = new Library(CSVDataService, librarayItemLendingService);
     }
-
 
     private void printOverDueItems() {
         System.out.println();

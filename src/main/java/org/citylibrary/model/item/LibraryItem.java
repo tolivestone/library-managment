@@ -4,22 +4,27 @@ import org.citylibrary.enums.ItemType;
 import org.citylibrary.enums.Status;
 
 import java.util.Objects;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-//TODO: check getters and setters
 public abstract class LibraryItem implements Loanable {
 
-    private final int libraryId;
-    private final int itemId;
-    private final ItemType type;
-    private final String title;
-    private Status itemStatus;
+    private final int libraryId;            //required unique library id
+    private final int itemId;               //required
+    private final ItemType type;            //required
+    private final String title;             //required
+    private volatile Status itemStatus;     //required
 
-    public LibraryItem(final int libraryId, final int itemId,final  ItemType type,final String title) {
+    private final String description;       //optional
+
+    protected LibraryItem(final int libraryId, final int itemId,final  ItemType type,final String title, String description) {
         this.libraryId = libraryId;
         this.itemId = itemId;
         this.type = type;
         this.title = title;
         this.itemStatus = Status.AVAILABLE;
+        this.description = description;
     }
 
     public int getLibraryId() {
@@ -42,32 +47,25 @@ public abstract class LibraryItem implements Loanable {
         return itemStatus;
     }
 
-    public void setItemStatus(final Status itemStatus) {
-        this.itemStatus = itemStatus;
+    public String getDescription() {
+        return description;
+    }
+
+    public final void setItemStatus(final Status itemStatus) {
+            this.itemStatus = itemStatus;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         LibraryItem that = (LibraryItem) o;
-
-        if (libraryId != that.libraryId) return false;
-        if (itemId != that.itemId) return false;
-        if (type != that.type) return false;
-        if (!Objects.equals(title, that.title)) return false;
-        return itemStatus == that.itemStatus;
+        return libraryId == that.libraryId;
     }
 
     @Override
     public int hashCode() {
-        int result = libraryId;
-        result = 31 * result + itemId;
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (itemStatus != null ? itemStatus.hashCode() : 0);
-        return result;
+        return 31 * libraryId;
     }
 
     @Override
@@ -78,51 +76,45 @@ public abstract class LibraryItem implements Loanable {
                 ", type=" + type +
                 ", title='" + title + '\'' +
                 ", itemStatus=" + itemStatus +
-                '}';
+                ", description='" + description + '\'' +
+                ']';
     }
 
-    //Builder for library items, This will abstract item creation and sure no item is created with invalid data
+    //Builder for library items, This will abstract item creation and make sure no item is created with invalid data
     public static class LibraryItemBuilder {
 
-        private int libraryId;
-        private int itemId;
-        private ItemType type;
-        private String title;
+        private final int libraryId;
+        private final int itemId;
+        private final ItemType type;
+        private final String title;
+        private String description = "";
 
-        public LibraryItemBuilder withLibraryId(final int libraryId) {
+        public LibraryItemBuilder(int libraryId, int itemId, ItemType type, String title) {
+            if(libraryId <=0 || itemId <=0 || type == null || title == null || title.isEmpty())
+                        throw new IllegalArgumentException("One or more argurment are not set or valid");
+
             this.libraryId = libraryId;
-            return this;
-        }
-
-        public LibraryItemBuilder withItemId(final int ItemId) {
-            this.itemId = ItemId;
-            return this;
-        }
-
-        public LibraryItemBuilder withType(final ItemType type) {
+            this.itemId = itemId;
             this.type = type;
-            return this;
+            this.title = title;
         }
 
-        public LibraryItemBuilder withTitle(final String title) {
-            this.title = title;
+        public LibraryItemBuilder withDescription(String description) {
+            this.description = description;
             return this;
         }
 
         public LibraryItem build() {
-            if(libraryId <=0 || itemId <=0 || type == null || title == null || title.isEmpty())
-                throw new IllegalArgumentException("One or more argurment are not valid");
-
             LibraryItem item = null;
             switch (this.type) {
                 case BOOK:
-                    item = new Book(this.libraryId, this.itemId, this.title);
+                    item = new Book(this.libraryId, this.itemId, this.title,description);
                     break;
                 case DVD:
-                    item =  new Dvd(this.libraryId, this.itemId, this.title);
+                    item =  new Dvd(this.libraryId, this.itemId, this.title,description);
                     break;
                 case VHS:
-                    item =  new Vhs(this.libraryId, this.itemId, this.title);
+                    item =  new Vhs(this.libraryId, this.itemId, this.title,description);
                     break;
             }
             return item;

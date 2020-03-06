@@ -46,33 +46,27 @@ public final class LibrarItemCsvReader {
 
                 switch (record[2].toUpperCase()) {
                     case "BOOK":
-                        LibraryItem book = new LibraryItem.LibraryItemBuilder()
-                                .withLibraryId(Integer.parseInt(record[0]))
-                                .withItemId(Integer.parseInt(record[1]))
-                                .withTitle(record[3])
-                                .withType(ItemType.BOOK)
+                        LibraryItem book =
+                                new LibraryItem.LibraryItemBuilder(Integer.parseInt(record[0]), Integer.parseInt(record[1]),ItemType.BOOK,record[3])
+                                .withDescription("Description for " + record[3])
                                 .build();
 
                         libraryItems.add(book);
                         break;
 
                     case "DVD":
-                        LibraryItem dvd = new LibraryItem.LibraryItemBuilder()
-                                .withLibraryId(Integer.parseInt(record[0]))
-                                .withItemId(Integer.parseInt(record[1]))
-                                .withTitle(record[3])
-                                .withType(ItemType.DVD)
+                        LibraryItem dvd =
+                                new LibraryItem.LibraryItemBuilder(Integer.parseInt(record[0]), Integer.parseInt(record[1]),ItemType.DVD,record[3])
+                                .withDescription("Description for " + record[3])
                                 .build();
 
                         libraryItems.add(dvd);
                         break;
 
                     case "VHS":
-                        LibraryItem vhs = new LibraryItem.LibraryItemBuilder()
-                                .withLibraryId(Integer.parseInt(record[0]))
-                                .withItemId(Integer.parseInt(record[1]))
-                                .withTitle(record[3])
-                                .withType(ItemType.VHS)
+                        LibraryItem vhs =
+                                new LibraryItem.LibraryItemBuilder(Integer.parseInt(record[0]), Integer.parseInt(record[1]),ItemType.VHS,record[3])
+                                .withDescription("Description for " + record[3])
                                 .build();
 
                         libraryItems.add(vhs);

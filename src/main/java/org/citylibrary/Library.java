@@ -1,6 +1,7 @@
 package org.citylibrary;
 
 import org.citylibrary.enums.ItemType;
+import org.citylibrary.exception.LibraryOperationException;
 import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.LibraryItem;
 import org.citylibrary.model.item.Loan;
@@ -26,7 +27,7 @@ public final class Library {
         this.lendingService = lendingService;
     }
 
-    public boolean borrowItem(Person borrower, LibraryItem item) {
+    public boolean borrowItem(Person borrower, LibraryItem item) throws LibraryOperationException {
         Objects.requireNonNull(borrower, "Borrower cannot be null");
         Objects.requireNonNull(item, "Item cannot be null");
 
