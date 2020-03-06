@@ -27,7 +27,7 @@ public final class Library {
         this.lendingService = lendingService;
     }
 
-    public boolean borrowItem(Person borrower, LibraryItem item) throws LibraryOperationException {
+    public boolean borrowItem(Person borrower, LibraryItem item)  {
         Objects.requireNonNull(borrower, "Borrower cannot be null");
         Objects.requireNonNull(item, "Item cannot be null");
 
