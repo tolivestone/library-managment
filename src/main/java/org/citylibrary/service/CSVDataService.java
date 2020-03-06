@@ -166,8 +166,8 @@ public class CSVDataService implements DataService{
     }
 
     @Override
-    public boolean addLoan(Person borrower, LibraryItem item, LocalDate issueDate, LocalDate dueDate) {
-        Objects.requireNonNull(borrower, "Borrower cannot be null");
+    public boolean addLoan(Person customer, LibraryItem item, LocalDate issueDate, LocalDate dueDate) {
+        Objects.requireNonNull(customer, "Customer cannot be null");
         Objects.requireNonNull(item, "Item cannot be null");
         Objects.requireNonNull(issueDate, "issueDate cannot be null");
         Objects.requireNonNull(dueDate, "dueDate cannot be null");
@@ -176,7 +176,7 @@ public class CSVDataService implements DataService{
         try {
             loanReadWriteLock.writeLock().lock();invtentoryReadWriteLock.writeLock().lock();
             item.setItemStatus(Status.LOANED);
-            Loan newLoan = new Loan(borrower, item, issueDate, dueDate);
+            Loan newLoan = new Loan(customer, item, issueDate, dueDate);
             added = dataStore.getLoans().add(newLoan);
         } finally {
             loanReadWriteLock.writeLock().unlock();

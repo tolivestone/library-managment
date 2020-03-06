@@ -1,27 +1,26 @@
 package org.citylibrary.model.item;
 
-import org.citylibrary.model.actor.Borrower;
 import org.citylibrary.model.actor.Person;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 public final class Loan {
-    private final Person borrower;
+    private final Person customer;
     private final LibraryItem item;
     private final LocalDate issueDate;
     private final LocalDate dueDate;
 
 
-    public Loan(final Person borrower, final  LibraryItem item, final LocalDate issueDate, final LocalDate dueDate) {
-        this.borrower = borrower;
+    public Loan(final Person customer, final  LibraryItem item, final LocalDate issueDate, final LocalDate dueDate) {
+        this.customer = customer;
         this.item = item;
         this.issueDate = issueDate;
         this.dueDate = dueDate;
     }
 
-    public Person getBorrower() {
-        return borrower;
+    public Person getCustomer() {
+        return customer;
     }
 
     public LibraryItem getItem() {
@@ -43,7 +42,7 @@ public final class Loan {
 
         Loan loan = (Loan) o;
 
-        if (!Objects.equals(borrower, loan.borrower)) return false;
+        if (!Objects.equals(customer, loan.customer)) return false;
         if (!Objects.equals(item, loan.item)) return false;
         if (!Objects.equals(issueDate, loan.issueDate)) return false;
         return Objects.equals(dueDate, loan.dueDate);
@@ -51,7 +50,7 @@ public final class Loan {
 
     @Override
     public int hashCode() {
-        int result = borrower != null ? borrower.hashCode() : 0;
+        int result = customer != null ? customer.hashCode() : 0;
         result = 31 * result + (item != null ? item.hashCode() : 0);
         result = 31 * result + (issueDate != null ? issueDate.hashCode() : 0);
         result = 31 * result + (dueDate != null ? dueDate.hashCode() : 0);
@@ -61,7 +60,7 @@ public final class Loan {
     @Override
     public String toString() {
         return "Loan[" +
-                "\nborrower=" + borrower +
+                "\ncustomer=" + customer +
                 ",\n item=" + item +
                 ",\n issueDate=" + issueDate +
                 "\n  dueDate=" + dueDate +

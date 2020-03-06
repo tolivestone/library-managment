@@ -2,10 +2,8 @@ package org.citylibrary;
 
 import org.assertj.core.api.Assertions;
 import org.citylibrary.enums.ItemType;
-import org.citylibrary.model.actor.Borrower;
+import org.citylibrary.model.actor.Customer;
 import org.citylibrary.model.actor.Person;
-import org.citylibrary.model.item.Book;
-import org.citylibrary.model.item.Dvd;
 import org.citylibrary.model.item.LibraryItem;
 import org.citylibrary.model.item.Loan;
 import org.citylibrary.service.CSVDataService;
@@ -27,7 +25,7 @@ public class LibraryTest {
     Library library;
     List<LibraryItem> items;
     List<Loan> loans;
-    Borrower borrower;
+    Customer customer;
 
     @Before
     public void setUp() {
@@ -45,13 +43,13 @@ public class LibraryTest {
                 new LibraryItem.LibraryItemBuilder(5,3, ItemType.DVD, "Frozen").build()
         );
 
-        borrower = new Borrower(1,"Borrower1", "B Last Name");
+        customer = new Customer(1,"Customer", "B Last Name");
 
         loans = new ArrayList<>();
         loans.addAll(List.of(
-                new Loan(borrower,items.get(0),LocalDate.now(),LocalDate.now().plusDays(-2)),
-                new Loan(borrower,items.get(1),LocalDate.now(),LocalDate.now().plusDays(-3)),
-                new Loan(borrower,items.get(2),LocalDate.now(),LocalDate.now().plusDays(7))
+                new Loan(customer,items.get(0),LocalDate.now(),LocalDate.now().plusDays(-2)),
+                new Loan(customer,items.get(1),LocalDate.now(),LocalDate.now().plusDays(-3)),
+                new Loan(customer,items.get(2),LocalDate.now(),LocalDate.now().plusDays(7))
         ));
 
 
@@ -71,15 +69,15 @@ public class LibraryTest {
     @Test
     public void borrowItem() {
         LibraryItem item = items.get(0);
-        Person borrower = new Borrower(1,"Borrower 1","Borrower's last name");
+        Person customer = new Customer(1,"Customer 1","Customer's last name");
         LocalDate today = LocalDate.now();
         LocalDate dueDate = today.plusDays(7);
-        when(mockLendingService.borrowItem(borrower,item, today, dueDate)).thenReturn(true);
+        when(mockLendingService.borrowItem(customer,item, today, dueDate)).thenReturn(true);
 
-        Assertions.assertThat(library.borrowItem(borrower,item))
+        Assertions.assertThat(library.borrowItem(customer,item))
                 .isTrue();
         verify(mockLendingService, atMost(1))
-                .borrowItem(borrower,item, today, dueDate);
+                .borrowItem(customer,item, today, dueDate);
     }
 
     @Test
@@ -110,7 +108,7 @@ public class LibraryTest {
     public void getItemBorrowedByUser() {
         when(mockDataService.getLoan()).thenReturn(loans);
 
-        Assertions.assertThat(library.getItemBorrowedByUser(borrower))
+        Assertions.assertThat(library.getItemBorrowedByUser(customer))
                 .isNotEmpty()
                 .hasSize(3);
         verify(mockDataService, atMost(1))

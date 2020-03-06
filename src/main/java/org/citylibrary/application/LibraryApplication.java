@@ -35,17 +35,17 @@ public class LibraryApplication
 
         libraryApplication.printCurrentInventory();
 
-        // Borrower-1 borrows 2 items
-        // Borrower- 2 borrows 1 item
+        // Customer-1 borrows 2 items
+        // Customer- 2 borrows 1 item
         libraryApplication.borrowItems();
 
-        //Prints items borrowed by Borrower-1 and Borrower-2
+        //Prints items borrowed by Customer-1 and Customer-2
         libraryApplication.printItemsBorrowedByUsers();
 
-        // Prints currently loanable items excluding items borrowed by Borrower-1 and Borrower-2
+        // Prints currently loanable items excluding items borrowed by Customer-1 and Customer-2
         libraryApplication.printCurrentLoanableInventory();
 
-        //Borrower-1 returns an item
+        //Customer-1 returns an item
         libraryApplication.returnItems();
 
         libraryApplication.printOverDueItems();
@@ -54,7 +54,7 @@ public class LibraryApplication
 
     private void returnItems() {
         System.out.println();
-        System.out.println("**************************** BORROWER-1 RETURNING AN ITEM *************************************");
+        System.out.println("**************************** CUSTOMER-1 RETURNING AN ITEM *************************************");
         System.out.println();
 
         LibraryItem book = library.getCurrentInventory().get(5);
@@ -72,48 +72,48 @@ public class LibraryApplication
 
     private void printItemsBorrowedByUsers() {
         System.out.println();
-        System.out.println("**************************** ITEMS BORROWED BY A BORROWER-1 *************************************");
+        System.out.println("**************************** ITEMS BORROWED BY A CUSTOMER-1 *************************************");
         System.out.println();
 
-        Person borrower1 = dataStore.getBorrowers().get(0);
-        library.getItemBorrowedByUser(borrower1).forEach(loan-> System.out.println(loan.getItem()));
+        Person customer1 = dataStore.getCustomers().get(0);
+        library.getItemBorrowedByUser(customer1).forEach(loan-> System.out.println(loan.getItem()));
 
 
         System.out.println();
-        System.out.println("**************************** ITEMS BORROWED BY A BORROWER-2 *************************************");
+        System.out.println("**************************** ITEMS BORROWED BY A CUSTOMER-2 *************************************");
         System.out.println();
 
-        Person borrower2 = dataStore.getBorrowers().get(1);
-        library.getItemBorrowedByUser(borrower2).forEach(loan-> System.out.println(loan.getItem()));
+        Person customer2 = dataStore.getCustomers().get(1);
+        library.getItemBorrowedByUser(customer2).forEach(loan-> System.out.println(loan.getItem()));
     }
 
     private void borrowItems() {
 
         System.out.println();
-        System.out.println("**************************** BORROWER-1 BORROWS ITEMS *************************************");
+        System.out.println("**************************** CUSTOMER-1 BORROWS ITEMS *************************************");
         System.out.println();
 
-        Person borrower1 = dataStore.getBorrowers().get(0);
+        Person customer1 = dataStore.getCustomers().get(0);
         LibraryItem item = CSVDataService.searchItemsByLibraryId(1).get(0);
         LibraryItem item3 = CSVDataService.searchItemsByLibraryId(5).get(0);
 
         System.out.println(item);
         System.out.println(item3);
 
-        library.borrowItem(borrower1,item);
-        library.borrowItem(borrower1,item3);
+        library.borrowItem(customer1,item);
+        library.borrowItem(customer1,item3);
 
 
         System.out.println();
-        System.out.println("**************************** BORROWER-2 BORROWS A ITEM *************************************");
+        System.out.println("**************************** CUSTOMER-2 BORROWS A ITEM *************************************");
         System.out.println();
 
-        Person borrower2 = dataStore.getBorrowers().get(1);
+        Person customer2 = dataStore.getCustomers().get(1);
         LibraryItem item2 = CSVDataService.searchItemsByLibraryId(3).get(0);
 
         System.out.println(item2);
 
-        library.borrowItem(borrower2,item2);
+        library.borrowItem(customer2,item2);
 
     }
 

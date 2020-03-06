@@ -4,9 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.citylibrary.db.DataStore;
 import org.citylibrary.enums.ItemType;
 import org.citylibrary.enums.Status;
-import org.citylibrary.model.actor.Borrower;
+import org.citylibrary.model.actor.Customer;
 import org.citylibrary.model.actor.Person;
-import org.citylibrary.model.item.Book;
 import org.citylibrary.model.item.LibraryItem;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,18 +24,18 @@ public class LibrarayItemLendingServiceTest {
         LibrarayItemLendingService librarayItemLendingService = new LibrarayItemLendingService(mockCSVDataService);
 
         LibraryItem book = new LibraryItem.LibraryItemBuilder(1,1, ItemType.BOOK,"Test Book").build();
-        Person borrower1 = new Borrower(1,"Borrower-1", "Borrower Last name");
+        Person customer1 = new Customer(1,"Customer-1", "Customer Last name");
         LocalDate today = LocalDate.now();
         LocalDate dueDate = today.plusDays(7);
 
-        when(mockCSVDataService.addLoan(borrower1, book, today, dueDate)).thenReturn(true);
+        when(mockCSVDataService.addLoan(customer1, book, today, dueDate)).thenReturn(true);
 
         Assertions
-                .assertThat(librarayItemLendingService.borrowItem(borrower1, book, today, dueDate))
+                .assertThat(librarayItemLendingService.borrowItem(customer1, book, today, dueDate))
                 .isEqualTo(true);
 
         verify(mockCSVDataService, atMost(1))
-                .addLoan(borrower1, book, today, dueDate);
+                .addLoan(customer1, book, today, dueDate);
     }
 
 
@@ -46,18 +45,18 @@ public class LibrarayItemLendingServiceTest {
         LibrarayItemLendingService librarayItemLendingService = new LibrarayItemLendingService(mockCSVDataService);
 
         LibraryItem book = new LibraryItem.LibraryItemBuilder(1,1,ItemType.BOOK,"Test Book").build();
-        Person borrower1 = new Borrower(1,"Borrower-1", "Borrower Last name");
+        Person customer1 = new Customer(1,"Customer-1", "Customer Last name");
         LocalDate today = LocalDate.now();
         LocalDate dueDate = today.plusDays(7);
 
-        when(mockCSVDataService.addLoan(borrower1, book, today, dueDate)).thenReturn(true);
+        when(mockCSVDataService.addLoan(customer1, book, today, dueDate)).thenReturn(true);
 
         Assertions
-                .assertThat(librarayItemLendingService.borrowItem(borrower1, book, today, dueDate))
+                .assertThat(librarayItemLendingService.borrowItem(customer1, book, today, dueDate))
                 .isEqualTo(true);
 
         verify(mockCSVDataService, atMost(1))
-                .addLoan(borrower1, book, today, dueDate);
+                .addLoan(customer1, book, today, dueDate);
     }
 
     @Test

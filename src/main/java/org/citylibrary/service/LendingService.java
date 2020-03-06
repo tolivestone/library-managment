@@ -6,6 +6,6 @@ import org.citylibrary.model.item.LibraryItem;
 import java.time.LocalDate;
 
 public interface LendingService {
-    boolean borrowItem(Person borrower, LibraryItem item, LocalDate issueDate, LocalDate dueDate);
+    boolean borrowItem(Person customer, LibraryItem item, LocalDate issueDate, LocalDate dueDate);
     boolean returnItem(LibraryItem item);
 }

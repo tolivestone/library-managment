@@ -14,11 +14,11 @@ public class LibrarayItemLendingService implements LendingService{
     }
 
     @Override
-    public boolean borrowItem(Person borrower, LibraryItem item, LocalDate issueDate, LocalDate dueDate) {
-        if(borrower == null || item == null || issueDate == null || dueDate == null)
+    public boolean borrowItem(Person customer, LibraryItem item, LocalDate issueDate, LocalDate dueDate) {
+        if(customer == null || item == null || issueDate == null || dueDate == null)
             throw new IllegalArgumentException("One or more arguments are null");
 
-        return dataService.addLoan(borrower, item, issueDate, dueDate);
+        return dataService.addLoan(customer, item, issueDate, dueDate);
     }
 
     @Override

@@ -116,6 +116,9 @@ public abstract class LibraryItem implements Loanable {
                 case VHS:
                     item =  new Vhs(this.libraryId, this.itemId, this.title,description);
                     break;
+                case CD:
+                    item =  new CompactDisc(this.libraryId, this.itemId, this.title,description);
+                    break;
             }
             return item;
         }

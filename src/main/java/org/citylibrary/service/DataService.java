@@ -13,7 +13,7 @@ public interface DataService {
     void reloadDataStore();
     boolean addLibraryItem(final LibraryItem item);
     boolean removeLibraryItem(final LibraryItem item) throws LibraryOperationException;
-    boolean addLoan(Person borrower, LibraryItem item, LocalDate issueDate, LocalDate dueDate);
+    boolean addLoan(Person customer, LibraryItem item, LocalDate issueDate, LocalDate dueDate);
     boolean returnLoanedItem(LibraryItem item);
     List<LibraryItem> getCurrentInventory();
     List<LibraryItem>getCurrentLoanableInventory();

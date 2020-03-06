@@ -1,7 +1,6 @@
 package org.citylibrary;
 
 import org.citylibrary.enums.ItemType;
-import org.citylibrary.exception.LibraryOperationException;
 import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.LibraryItem;
 import org.citylibrary.model.item.Loan;
@@ -27,14 +26,14 @@ public final class Library {
         this.lendingService = lendingService;
     }
 
-    public boolean borrowItem(Person borrower, LibraryItem item)  {
-        Objects.requireNonNull(borrower, "Borrower cannot be null");
+    public boolean borrowItem(Person customer, LibraryItem item)  {
+        Objects.requireNonNull(customer, "Customer cannot be null");
         Objects.requireNonNull(item, "Item cannot be null");
 
         LocalDate issueDate = LocalDate.now();
         LocalDate dueDate = issueDate.plusDays(LOAN_PERIOD);
 
-        return lendingService.borrowItem(borrower,item,issueDate,dueDate);
+        return lendingService.borrowItem(customer,item,issueDate,dueDate);
     }
 
     public boolean returnItem(LibraryItem item) {
@@ -50,12 +49,12 @@ public final class Library {
                 .collect(Collectors.toList());
     }
 
-    public List<Loan> getItemBorrowedByUser(Person borrower) {
-        Objects.requireNonNull(borrower,"Borrower cannot be null");
+    public List<Loan> getItemBorrowedByUser(Person customer) {
+        Objects.requireNonNull(customer,"Customer cannot be null");
         return dataService
                 .getLoan()
                 .parallelStream()
-                .filter(item -> item.getBorrower().equals(borrower))
+                .filter(item -> item.getCustomer().equals(customer))
                 .collect(Collectors.toList());
     }
 
@@ -73,7 +72,7 @@ public final class Library {
                 .anyMatch(item->item.equals(libraryItem) && item.getType() == ItemType.BOOK);
     }
 
-    public LibraryItem findItem(String title, ItemType itemType) {
+    public LibraryItem findItemByTitleAndType(String title, ItemType itemType) {
         return
                 dataService.getCurrentInventory()
                 .parallelStream()

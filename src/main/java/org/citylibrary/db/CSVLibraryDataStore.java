@@ -1,7 +1,7 @@
 package org.citylibrary.db;
 
 import org.citylibrary.csvhelper.LibrarItemCsvReader;
-import org.citylibrary.model.actor.Borrower;
+import org.citylibrary.model.actor.Customer;
 import org.citylibrary.model.actor.Person;
 import org.citylibrary.model.item.LibraryItem;
 import org.citylibrary.model.item.Loan;
@@ -14,13 +14,13 @@ public class CSVLibraryDataStore implements DataStore {
     private static DataStore instance;
 
     private final List<LibraryItem> libraryItems;
-    private final List<Person> borrowers;
+    private final List<Person> customers;
     private final List<Loan> loans;
 
 
     private CSVLibraryDataStore() {
         libraryItems = new ArrayList<>();
-        borrowers = new ArrayList<>();
+        customers = new ArrayList<>();
         loans = new ArrayList<>();
 
         //Pre-populating data store with items and users
@@ -30,10 +30,10 @@ public class CSVLibraryDataStore implements DataStore {
                         LibrarItemCsvReader.getInstance()
                                 .getLibraryItemsFromCsv());
 
-        borrowers.addAll(List.of(
-                new Borrower(1,"Borrower-1","Borrower-1-LastName"),
-                new Borrower(2,"Borrower-2","Borrower-2-LastName"),
-                new Borrower(3,"Borrower-3","Borrower-3-LastName")
+        customers.addAll(List.of(
+                new Customer(1,"Customer-1","Customer-1-LastName"),
+                new Customer(2,"Customer-2","Customer-2-LastName"),
+                new Customer(3,"Customer-3","Customer-3-LastName")
         ));
     }
 
@@ -42,8 +42,8 @@ public class CSVLibraryDataStore implements DataStore {
         return libraryItems;
     }
 
-    public List<Person> getBorrowers() {
-        return borrowers;
+    public List<Person> getCustomers() {
+        return customers;
     }
 
     public List<Loan> getLoans() {

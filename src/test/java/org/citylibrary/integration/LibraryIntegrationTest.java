@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class LibraryIntegrationTest {
@@ -24,7 +23,7 @@ public class LibraryIntegrationTest {
     DataService dataService;
     LendingService lendingService;
     Library library;
-    Person borrower;
+    Person customer;
     DataStore dataStore;
 
     @Before
@@ -34,7 +33,7 @@ public class LibraryIntegrationTest {
         dataService.reloadDataStore();
         lendingService = new LibrarayItemLendingService(dataService);
         library = new Library(dataService,lendingService);
-        borrower = dataStore.getBorrowers().get(0);
+        customer = dataStore.getCustomers().get(0);
     }
 
     @Test
@@ -69,10 +68,10 @@ public class LibraryIntegrationTest {
     @Test
     public void canBorrowBook() {
         //Given
-        LibraryItem borrowBook = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
+        LibraryItem borrowBook = library.findItemByTitleAndType("The Pragmatic Programmer", ItemType.BOOK);
 
         //When
-        boolean ret = library.borrowItem(borrower,borrowBook);
+        boolean ret = library.borrowItem(customer,borrowBook);
 
         //Then
         Assertions.assertThat(ret).isTrue();
@@ -84,10 +83,10 @@ public class LibraryIntegrationTest {
     @Test
     public void canBorrowDvd() {
         //Given
-        LibraryItem borrowDvd = library.findItem("Pi", ItemType.DVD);
+        LibraryItem borrowDvd = library.findItemByTitleAndType("Pi", ItemType.DVD);
 
         //When
-        boolean ret = library.borrowItem(borrower,borrowDvd);
+        boolean ret = library.borrowItem(customer,borrowDvd);
 
         //Then
         Assertions.assertThat(ret).isTrue();
@@ -99,10 +98,10 @@ public class LibraryIntegrationTest {
     @Test
     public void canBorrowVhs() {
         //Given
-        LibraryItem borrowVhs = library.findItem("Hackers", ItemType.VHS);
+        LibraryItem borrowVhs = library.findItemByTitleAndType("Hackers", ItemType.VHS);
 
         //When
-        boolean ret = library.borrowItem(borrower,borrowVhs);
+        boolean ret = library.borrowItem(customer,borrowVhs);
 
         //Then
         Assertions.assertThat(ret).isTrue();
@@ -115,8 +114,8 @@ public class LibraryIntegrationTest {
     public void canReturnBorrowedItem() {
 
         //Given
-         LibraryItem borrowBook = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
-         library.borrowItem(borrower,borrowBook);
+         LibraryItem borrowBook = library.findItemByTitleAndType("The Pragmatic Programmer", ItemType.BOOK);
+         library.borrowItem(customer,borrowBook);
 
          //When
          boolean ret = library.returnItem(borrowBook);
@@ -134,7 +133,7 @@ public class LibraryIntegrationTest {
     public void canNotReturnUnBorrowedItem() {
 
         //Given
-        LibraryItem borrowBook = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
+        LibraryItem borrowBook = library.findItemByTitleAndType("The Pragmatic Programmer", ItemType.BOOK);
 
         //When
         boolean ret = library.returnItem(borrowBook);
@@ -154,8 +153,8 @@ public class LibraryIntegrationTest {
         LibraryItem borrowBook1 = library.getCurrentInventory().get(0);
         LibraryItem borrowBook2 = library.getCurrentInventory().get(1);
 
-        library.borrowItem(borrower,borrowBook1);
-        library.borrowItem(borrower,borrowBook2);
+        library.borrowItem(customer,borrowBook1);
+        library.borrowItem(customer,borrowBook2);
 
         // Make any one item overdue
         //dataService.getLoan().stream().findAny().ifPresent(item->item.setDueDate(LocalDate.now().plusDays(-3)));
@@ -170,29 +169,29 @@ public class LibraryIntegrationTest {
 
         //Given
         dataService.reloadDataStore();
-        LibraryItem borrowSoftwareBook = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
-        LibraryItem borrowJavaBook = library.findItem("Java Concurrency In Practice", ItemType.BOOK);
-        LibraryItem borrowHackersVhs = library.findItem("Hackers", ItemType.VHS);
+        LibraryItem borrowSoftwareBook = library.findItemByTitleAndType("The Pragmatic Programmer", ItemType.BOOK);
+        LibraryItem borrowJavaBook = library.findItemByTitleAndType("Java Concurrency In Practice", ItemType.BOOK);
+        LibraryItem borrowHackersVhs = library.findItemByTitleAndType("Hackers", ItemType.VHS);
 
-        library.borrowItem(borrower,borrowSoftwareBook);
-        library.borrowItem(borrower,borrowJavaBook);
-        library.borrowItem(borrower,borrowHackersVhs);
+        library.borrowItem(customer,borrowSoftwareBook);
+        library.borrowItem(customer,borrowJavaBook);
+        library.borrowItem(customer,borrowHackersVhs);
 
         //When
-        List<Loan> loans = library.getItemBorrowedByUser(borrower);
+        List<Loan> loans = library.getItemBorrowedByUser(customer);
 
         //Then
         Assertions.assertThat(loans)
                 .isNotEmpty()
                 .hasSize(3)
-                .flatExtracting(Loan::getBorrower)
-                .allMatch(b->b.equals(borrower));
+                .flatExtracting(Loan::getCustomer)
+                .allMatch(b->b.equals(customer));
     }
 
     @Test
     public void isBookAvailable() {
         //Given
-        LibraryItem book = library.findItem("The Pragmatic Programmer", ItemType.BOOK);
+        LibraryItem book = library.findItemByTitleAndType("The Pragmatic Programmer", ItemType.BOOK);
 
         //When
         boolean available = library.isBookAvailable(book);

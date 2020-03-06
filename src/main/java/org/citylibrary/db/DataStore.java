@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface DataStore {
     List<LibraryItem> getLibraryItems();
-    List<Person> getBorrowers();
+    List<Person> getCustomers();
     List<Loan> getLoans();
 }
